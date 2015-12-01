@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>eu.paasword</groupId>
+    <artifactId>jpasamples</artifactId>
+    <version>0.0.1</version>
+
+    <properties>
+        <project.source.charset>UTF-8</project.source.charset>
+        <project.source.encoding>UTF-8</project.source.encoding>
+        <java.version.source>1.8</java.version.source>
+        <java.version.target>1.8</java.version.target>
+        <org.springframework.boot>1.2.5.RELEASE</org.springframework.boot> 
+        <spring-test>4.1.6.RELEASE</spring-test>  
+        <com.mysql>5.1.36</com.mysql>
+        <junit>4.10</junit>
+    </properties>
+
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot</artifactId>
+            <version>${org.springframework.boot}</version>
+            <type>jar</type>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+            <version>${org.springframework.boot}</version>
+            <type>jar</type>
+        </dependency>        
+                
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>${org.springframework.boot}</version>
+        </dependency>
+        
+        <!-- Database configuration  -->       
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <version>${org.springframework.boot}</version>
+        </dependency>        
+        
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${com.mysql}</version>
+        </dependency>        
+        
+        <!-- testing -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit}</version>
+            <scope>test</scope>
+        </dependency>                     
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring-test}</version>
+            <scope>test</scope>
+        </dependency>        
+        
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- JAVA compatibility-->  
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <charset>${project.source.charset}</charset>
+                    <encoding>${project.source.encoding}</encoding>
+                    <source>${java.version.source}</source>
+                    <target>${java.version.target}</target>
+                </configuration>
+            </plugin>             
+            
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${org.springframework.boot}</version>
+                <configuration>
+                    <arguments>
+                        <argument>--spring.profiles.active=prod</argument>
+                    </arguments>
+                </configuration>
+            </plugin>   
+            
+        </plugins>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>spring-releases</id>
+            <url>https://repo.spring.io/libs-release</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>spring-releases</id>
+            <url>https://repo.spring.io/libs-release</url>
+        </pluginRepository>
+    </pluginRepositories>
+</project>
