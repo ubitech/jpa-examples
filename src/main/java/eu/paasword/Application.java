@@ -15,8 +15,12 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EntityScan({"eu.paasword.model"})
 @EnableJpaRepositories({"eu.paasword.dao"})
 @EnableAutoConfiguration
-
 @SpringBootApplication
+
+/**
+ *
+ * @author Panagiotis Gouvas (pgouvas@ubitech.eu)
+ */
 public class Application {
 
     public static void main(String[] args) {

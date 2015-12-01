@@ -14,31 +14,20 @@
  *  limitations under the License.
  */
 
-package eu.paasword.services;
+package eu.paasword.dao;
 
-import eu.paasword.dao.UserRepository;
-import eu.paasword.model.User;
+import eu.paasword.model.Project;
 import javax.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author Panagiotis Gouvas (pgouvas@ubitech.eu)
  */
-@Service
+
+@Repository
 @Transactional
-public class UserManagement {
-    
-    @Autowired
-    UserRepository urs;
-    
-    public User addUser(User u){
-        return urs.save(u);
-    }
-    
-    public User getUser(Long userid){
-        return urs.getOne(userid);
-    }
-    
-}//EoC
+public interface ProjectRepository extends JpaRepository<Project, Long> {
+        
+}//EoI

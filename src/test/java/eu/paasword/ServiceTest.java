@@ -15,7 +15,6 @@
  */
 package eu.paasword;
 
-import eu.paasword.Application;
 import eu.paasword.dao.UserRepository;
 import eu.paasword.model.User;
 import java.util.logging.Logger;
@@ -34,7 +33,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  *
- * @author Panagiotis Gouvas
+ * @author Panagiotis Gouvas (pgouvas@ubitech.eu)
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)

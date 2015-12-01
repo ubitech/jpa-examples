@@ -24,7 +24,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.Table;
 
 /**
  *
@@ -53,6 +52,16 @@ public class Project {
     private Set<User> users;    
 
     
+    /*
+    * Example of Bidirectional-Many-To-Many relationship
+    *----------------------------------------------------
+    * The following is an example of a Many to Many relationship between <Project> entity and <Inventoryitem> entity.
+    * The difference with the previous example is that the <Inventoryitem> entity also contains ManyToMany annotation.
+    * This way the Inventoryitem can also traverse the relationship
+    */    
+    @ManyToMany(cascade=CascadeType.ALL)
+    @JoinTable(name="project_inventoryitem", joinColumns=@JoinColumn(name="projectid"), inverseJoinColumns=@JoinColumn(name="inventoryitemid"))  
+    private Set<Inventoryitem> inventoryitems;       
     
     
     public Long getId() {
@@ -78,5 +87,5 @@ public class Project {
     public void setUsers(Set<User> users) {
         this.users = users;
     }   
-      
+    
 }

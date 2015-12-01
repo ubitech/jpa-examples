@@ -42,6 +42,7 @@ public class User {
     *-------------------------------------
     * In each Many-to-One usage there is one foreign key from the initiator (Many-part)
     * to the target (One-part). In our case this foreign key targets the Usertype.id
+    * Please note that ManyToOne relationships should be declared Eager by default
     */
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Usertype usertype;    

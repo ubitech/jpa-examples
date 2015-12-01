@@ -15,11 +15,14 @@
  */
 package eu.paasword.model;
 
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 /**
@@ -38,6 +41,16 @@ public class Inventoryitem {
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Inventoryitemtype inventoryitemtype;
 
+    /*
+    * Example of not-owning party in Bidirectional-Many-To-Many relationship.
+    * Please note that the non-owning party has to declare the "mappedBy" field
+    * which should be mapped to the reciprocal attribute which owns the relationship
+    * (i.e. Project.inventoryitems in our case)
+    */
+    @ManyToMany(cascade=CascadeType.ALL, mappedBy="inventoryitems")
+    private Set<Project> projects;        
+    
+    
     public Long getId() {
         return id;
     }
@@ -62,6 +75,12 @@ public class Inventoryitem {
         this.inventoryitemtype = inventoryitemtype;
     }
 
-    
+    public Set<Project> getProjects() {
+        return projects;
+    }
+
+    public void setProjects(Set<Project> projects) {
+        this.projects = projects;
+    }    
     
 }

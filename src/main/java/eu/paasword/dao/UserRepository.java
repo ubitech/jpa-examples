@@ -1,5 +1,5 @@
 /*
- *  Copyright 2015 Pearl project, http://paasport-project.eu/
+ *  Copyright 2015-2016 PaaSword project, http://www.paasword.eu/
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
