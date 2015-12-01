@@ -87,5 +87,13 @@ public class Project {
     public void setUsers(Set<User> users) {
         this.users = users;
     }   
+
+    public Set<Inventoryitem> getInventoryitems() {
+        return inventoryitems;
+    }
+
+    public void setInventoryitems(Set<Inventoryitem> inventoryitems) {
+        this.inventoryitems = inventoryitems;
+    }
     
 }

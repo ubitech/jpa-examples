@@ -13,21 +13,30 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-
 package eu.paasword.dao;
 
 import eu.paasword.model.Project;
+import java.util.List;
 import javax.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 /**
  *
  * @author Panagiotis Gouvas (pgouvas@ubitech.eu)
  */
-
 @Repository
 @Transactional
 public interface ProjectRepository extends JpaRepository<Project, Long> {
-        
+
+    @Query("select p from Project p INNER JOIN p.users u where u.id =?1 ")
+    List<Project> findProjectsWhereASpecificUserIsInvolved(Long userid);
+
+    @Query("select p from Project p INNER JOIN p.users u where u.usertype.id =?1 ")
+    List<Project> findProjectsWhereASpecificUserTypeIsInvolved(Long usertypeid);    
+    
+    @Query("select p from Project p FULL OUTER JOIN p.users u where u.id =?1 ")
+    List<Project> findProjectsWhereASpecificUserIsNotInvolved(Long userid);
+    
 }//EoI

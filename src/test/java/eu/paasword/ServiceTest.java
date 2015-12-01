@@ -15,10 +15,22 @@
  */
 package eu.paasword;
 
+import eu.paasword.dao.InventoryitemRepository;
+import eu.paasword.dao.InventoryitemtypeRepository;
+import eu.paasword.dao.ProjectRepository;
 import eu.paasword.dao.UserRepository;
+import eu.paasword.dao.UsertypeRepository;
+import eu.paasword.model.Inventoryitem;
+import eu.paasword.model.Inventoryitemtype;
+import eu.paasword.model.Project;
 import eu.paasword.model.User;
+import eu.paasword.model.Usertype;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 import javassist.bytecode.stackmap.TypeData.ClassName;
+import javax.transaction.Transactional;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -30,6 +42,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.transaction.TransactionConfiguration;
 
 /**
  *
@@ -37,6 +50,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
+@TransactionConfiguration(defaultRollback = false)
 public class ServiceTest {
 
     private static final Logger logger = Logger.getLogger(ClassName.class.getName());
@@ -66,13 +80,24 @@ public class ServiceTest {
     }
 
     @Autowired
-    UserRepository urs;
+    InventoryitemRepository invir;
+    @Autowired
+    InventoryitemtypeRepository invitr;
+    @Autowired
+    ProjectRepository prr;
+    @Autowired
+    UserRepository usrr;
+    @Autowired
+    UsertypeRepository usrtr;
 
-    @Ignore
     @Test
     public void testWiring() {
-        logger.info("Test Autowiring ");
-        Assert.assertNotNull(urs);
+        logger.info("Test Autowiring of all imported repositories");
+        Assert.assertNotNull(invir);
+        Assert.assertNotNull(invitr);
+        Assert.assertNotNull(prr);
+        Assert.assertNotNull(usrr);
+        Assert.assertNotNull(usrtr);
         logger.info("Test testWiring finished successfully");
     }//EOM    
 
@@ -82,24 +107,25 @@ public class ServiceTest {
      *   you should remove all data from your database and you should enable 
      *   spring.jpa.show-sql = true in the application.properties 
      */
+    @Ignore
     @Test
-    public void testDAOs() {
-        logger.info("Test DAOs initialized");
-
+    @Transactional
+    public void testInitializeDatabase() {
+        logger.info("Test testInitializeDatabase initialized");
         /*
-         * CASE-1: Insert a simple user. This is the simplest case
+         * Batch-1: Insert a simple user. This is the simplest case
          * In a clean installation of the database there will be no Usertype.
          * We will attempt to create one User object without filling the Usertype
          * Since Usertype is declared as "optional = false" we expect runtime exception
          */
-        try {
-            User newuser = new User();
-            newuser.setName("Panagiotis Gouvas");
-            logger.info("CASE-1 execution");
-            urs.save(newuser);
-        } catch (Exception ex1) {
-            logger.info("Exception generated because Usertype was not provided");
-        }
+//        try {
+//            User newuser = new User();
+//            newuser.setName("Panagiotis Gouvas");
+//            logger.info("CASE-1 execution");
+//            usrr.save(newuser);
+//        } catch (Exception ex1) {
+//            logger.info("Exception generated because Usertype was not provided");
+//        }
         /*
          * Indeed the save statement was interpreted to the following SQL 
          * insert into user (name, usertype) values (?, ?)
@@ -108,19 +134,170 @@ public class ServiceTest {
          * Please note that if "optional = false" changes to "optional = true" then the insert query
          * will be executed with the second argument as NULL
          */
-        
-        
-        
+
         /*
-         * CASE-1: Insert a simple user. This is the simplest case
-         * In a clean installation of the database there will be no Usertype.
-         * We will attempt to create one User object without filling the Usertype
-         * Since Usertype is declared as "optional = true" we expect runtime exception
+         * Batch-2: Initialize the database by putting sample usertypes, inventoryitemtypes, users, inventoryitems and projects
          */
+        //initialize usertypes (3 indicative types)  
+        Usertype ust1 = new Usertype();
+        ust1.setTypename("UserType1");
+        usrtr.save(ust1);
+        Usertype ust2 = new Usertype();
+        ust2.setTypename("UserType2");
+        usrtr.save(ust2);
+        Usertype ust3 = new Usertype();
+        ust3.setTypename("UserType3");
+        usrtr.save(ust3);
+
+        //initialize users (3 users per each usertype)
+        User user11 = new User();
+        user11.setName("User11");
+        user11.setUsertype(ust1);
+        usrr.save(user11);
+        User user12 = new User();
+        user12.setName("User12");
+        user12.setUsertype(ust1);
+        usrr.save(user12);
+        User user13 = new User();
+        user13.setName("User13");
+        user13.setUsertype(ust1);
+        usrr.save(user13);
+
+        User user21 = new User();
+        user21.setName("User21");
+        user21.setUsertype(ust2);
+        usrr.save(user21);
+        User user22 = new User();
+        user22.setName("User22");
+        user22.setUsertype(ust2);
+        usrr.save(user22);
+        User user23 = new User();
+        user23.setName("User23");
+        user23.setUsertype(ust2);
+        usrr.save(user23);
+
+        User user31 = new User();
+        user31.setName("User31");
+        user31.setUsertype(ust3);
+        usrr.save(user31);
+        User user32 = new User();
+        user32.setName("User32");
+        user32.setUsertype(ust3);
+        usrr.save(user32);
+        User user33 = new User();
+        user33.setName("User33");
+        user33.setUsertype(ust3);
+        usrr.save(user33);
+
+        //initialize inventorytypes (3 indicative types)       
+        Inventoryitemtype inventoryitemtype1 = new Inventoryitemtype();
+        inventoryitemtype1.setItemtypename("InventoryType1");
+        invitr.save(inventoryitemtype1);
+        Inventoryitemtype inventoryitemtype2 = new Inventoryitemtype();
+        inventoryitemtype2.setItemtypename("InventoryType2");
+        invitr.save(inventoryitemtype2);
+        Inventoryitemtype inventoryitemtype3 = new Inventoryitemtype();
+        inventoryitemtype3.setItemtypename("InventoryType3");
+        invitr.save(inventoryitemtype3);
+
+        //initialize inventoryitems (3 items per each item type)
+        Inventoryitem inv11 = new Inventoryitem();
+        inv11.setItemname("Item11");
+        inv11.setInventoryitemtype(inventoryitemtype1);
+        invir.save(inv11);
+        Inventoryitem inv12 = new Inventoryitem();
+        inv12.setItemname("Item12");
+        inv12.setInventoryitemtype(inventoryitemtype1);
+        invir.save(inv12);
+        Inventoryitem inv13 = new Inventoryitem();
+        inv13.setItemname("Item13");
+        inv13.setInventoryitemtype(inventoryitemtype1);
+        invir.save(inv13);
+
+        Inventoryitem inv21 = new Inventoryitem();
+        inv21.setItemname("Item21");
+        inv21.setInventoryitemtype(inventoryitemtype2);
+        invir.save(inv21);
+        Inventoryitem inv22 = new Inventoryitem();
+        inv22.setItemname("Item22");
+        inv22.setInventoryitemtype(inventoryitemtype2);
+        invir.save(inv22);
+        Inventoryitem inv23 = new Inventoryitem();
+        inv23.setItemname("Item23");
+        inv23.setInventoryitemtype(inventoryitemtype2);
+        invir.save(inv23);
+
+        Inventoryitem inv31 = new Inventoryitem();
+        inv31.setItemname("Item31");
+        inv31.setInventoryitemtype(inventoryitemtype3);
+        invir.save(inv31);
+        Inventoryitem inv32 = new Inventoryitem();
+        inv32.setItemname("Item32");
+        inv32.setInventoryitemtype(inventoryitemtype3);
+        invir.save(inv32);
+        Inventoryitem inv33 = new Inventoryitem();
+        inv33.setItemname("Item33");
+        inv33.setInventoryitemtype(inventoryitemtype3);
+        invir.save(inv33);
+
+        //initialize projects (3 indicative projects)        
+        Project project1 = new Project();
+        project1.setName("Project1");
+        prr.save(project1);
+        Project project2 = new Project();
+        project2.setName("Project2");
+        prr.save(project2);
+        Project project3 = new Project();
+        project3.setName("Project3");
+        prr.save(project3);
+
+        /*
+         * Batch-3: Perform Many to Many associations associations
+         * project_users first
+         * project1 -> user11 user22 user33
+         * project2 -> user12 user23 user31
+         * project3 -> user13 user21 user32
+         *
+         * project_inventory
+         * project1 -> inv12 inv23 inv32
+         * project2 -> inv13 inv21 inv33 
+         * project3 -> inv11 inv22 inv31
+         */
+        Set<User> usersforproject1 = new HashSet<User>();
+        usersforproject1.add(user11);
+        project1.setUsers(usersforproject1);
+        project1.getUsers().add(user22);
+        project1.getUsers().add(user33);
+
+        Set<User> usersforproject2 = new HashSet<User>();
+        usersforproject2.add(user12);
+        project2.setUsers(usersforproject2);
+        project2.getUsers().add(user23);
+        project2.getUsers().add(user31);
+
+        Set<User> usersforproject3 = new HashSet<User>();
+        usersforproject3.add(user13);
+        project3.setUsers(usersforproject3);
+        project3.getUsers().add(user21);
+        project3.getUsers().add(user32);
+
+    }//EoM
+
+    /*
+     * Perform complex Queries in the initialized database
+     */
+    @Test
+    @Transactional
+    public void testQueries() {
         
+        List<Project> projects = prr.findProjectsWhereASpecificUserIsInvolved(new Long(1));
+        logger.info("User with id: 1 works in projects #: "+projects.size());
         
+        projects = prr.findProjectsWhereASpecificUserTypeIsInvolved(new Long(1));
+        logger.info("Usertype with id:1 works in projects #: "+projects.size());
         
-        
+        projects = prr.findProjectsWhereASpecificUserIsNotInvolved(new Long(1));
+        logger.info("Usertype with id:1 is notworking in projects #: "+projects.size());        
         
     }//EoM
 
