@@ -69,5 +69,14 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
     
     @Query("select DISTINCT(p) from Project p INNER JOIN p.users u where u.usertype.id =?1 ")
     List<Project> findDistinctProjectsWhereASpecificUserTypeIsInvolved(Long usertypeid);    
+
+    @Query("select COUNT(p) from Project p INNER JOIN p.users u where u.usertype.id =?1 ")
+    Long countProjectsWhereASpecificUserTypeIsInvolved(Long usertypeid);    
+   
+    @Query("select SUM(p.budget) from Project p INNER JOIN p.users u where u.usertype.id =?1 ")
+    Long getTheBudgetofProjectsWhereASpecificUserTypeIsInvolved(Long usertypeid);        
+
+//    @Query("select SUM(p.budget) from Project p INNER JOIN p.users u where u.usertype.id =?1")
+//    Long getTheDistinctBudgetofProjectsWhereASpecificUserTypeIsInvolved(Long usertypeid);        
     
 }//EoI

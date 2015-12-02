@@ -379,8 +379,18 @@ public class ServiceTest {
         logger.info("SizeOfResults #: " + projects.size());
         printResults(projects);
 
-
-
+        Long results = prr.countProjectsWhereASpecificUserTypeIsInvolved(new Long(1)); //it will return 4: pr1 pr3 pr2 and pr3
+        logger.info("count #: " + results);
+        //printResults(projects);
+        
+        results = prr.getTheBudgetofProjectsWhereASpecificUserTypeIsInvolved(new Long(1)); //it should return 9.000.000
+        logger.info("sum #: " + results);
+        //printResults(projects);
+        
+//        results = prr.getTheDistinctBudgetofProjectsWhereASpecificUserTypeIsInvolved(new Long(1)); //it should return 6.000.000
+//        logger.info("sum #: " + results);
+//        //printResults(projects);        
+        
     }//EoM
 
     private static void printResults(List<?> objects) {
