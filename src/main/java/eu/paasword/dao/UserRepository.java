@@ -30,4 +30,5 @@ import org.springframework.stereotype.Repository;
 @Transactional
 public interface UserRepository extends JpaRepository<User, Long> {
         
+    
 }//EoI

@@ -15,6 +15,7 @@
  */
 package eu.paasword.model;
 
+import java.util.Date;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -39,6 +40,15 @@ public class Project {
     @Column(nullable = false)    
     private String name;    
     
+    @Column(nullable = true)    
+    private int budget;     
+    
+    @Column(nullable = true)
+    private boolean isfinished;
+    
+    @Column(nullable = true)
+    private Date startdate;    
+    
     /*
     * Example of Unidirectional-Many-To-Many relationship
     *----------------------------------------------------
@@ -62,7 +72,11 @@ public class Project {
     @ManyToMany(cascade=CascadeType.ALL)
     @JoinTable(name="project_inventoryitem", joinColumns=@JoinColumn(name="projectid"), inverseJoinColumns=@JoinColumn(name="inventoryitemid"))  
     private Set<Inventoryitem> inventoryitems;       
-    
+
+    @Override
+    public String toString() {
+        return this.getName()+"("+this.getId()+")";
+    }    
     
     public Long getId() {
         return id;
@@ -95,5 +109,29 @@ public class Project {
     public void setInventoryitems(Set<Inventoryitem> inventoryitems) {
         this.inventoryitems = inventoryitems;
     }
+
+    public int getBudget() {
+        return budget;
+    }
+
+    public void setBudget(int budget) {
+        this.budget = budget;
+    }
+
+    public boolean isIsfinished() {
+        return isfinished;
+    }
+
+    public void setIsfinished(boolean isfinished) {
+        this.isfinished = isfinished;
+    }
+
+    public Date getStartdate() {
+        return startdate;
+    }
+
+    public void setStartdate(Date startdate) {
+        this.startdate = startdate;
+    }    
     
 }

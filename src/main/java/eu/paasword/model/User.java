@@ -21,7 +21,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
 /**
  *
@@ -37,6 +36,9 @@ public class User {
     @Column(nullable = false)    
     private String name;  
     
+    @Column(nullable = true)    
+    private int salary;      
+    
     /*
     * Example of Many-To-One relationship
     *-------------------------------------
@@ -46,6 +48,11 @@ public class User {
     */
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     private Usertype usertype;    
+    
+    @Override
+    public String toString() {
+        return this.getName()+"("+this.getId()+")";
+    }    
     
     public Long getId() {
         return id;
@@ -70,5 +77,13 @@ public class User {
     public void setUsertype(Usertype usertype) {
         this.usertype = usertype;
     }
-        
+
+    public int getSalary() {
+        return salary;
+    }
+
+    public void setSalary(int salary) {
+        this.salary = salary;
+    }
+          
 }

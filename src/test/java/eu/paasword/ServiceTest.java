@@ -25,6 +25,8 @@ import eu.paasword.model.Inventoryitemtype;
 import eu.paasword.model.Project;
 import eu.paasword.model.User;
 import eu.paasword.model.Usertype;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -110,7 +112,7 @@ public class ServiceTest {
     @Ignore
     @Test
     @Transactional
-    public void testInitializeDatabase() {
+    public void testInitializeDatabase() throws ParseException {
         logger.info("Test testInitializeDatabase initialized");
         /*
          * Batch-1: Insert a simple user. This is the simplest case
@@ -153,40 +155,49 @@ public class ServiceTest {
         User user11 = new User();
         user11.setName("User11");
         user11.setUsertype(ust1);
+        user11.setSalary(1100);
         usrr.save(user11);
         User user12 = new User();
         user12.setName("User12");
         user12.setUsertype(ust1);
+        user12.setSalary(1500);
         usrr.save(user12);
         User user13 = new User();
         user13.setName("User13");
         user13.setUsertype(ust1);
+        user13.setSalary(1900);
         usrr.save(user13);
 
         User user21 = new User();
         user21.setName("User21");
         user21.setUsertype(ust2);
+        user21.setSalary(2100);
         usrr.save(user21);
         User user22 = new User();
         user22.setName("User22");
         user22.setUsertype(ust2);
+        user22.setSalary(2500);
         usrr.save(user22);
         User user23 = new User();
         user23.setName("User23");
         user23.setUsertype(ust2);
+        user23.setSalary(2900);
         usrr.save(user23);
 
         User user31 = new User();
         user31.setName("User31");
         user31.setUsertype(ust3);
+        user31.setSalary(3100);
         usrr.save(user31);
         User user32 = new User();
         user32.setName("User32");
         user32.setUsertype(ust3);
+        user32.setSalary(3500);
         usrr.save(user32);
         User user33 = new User();
         user33.setName("User33");
         user33.setUsertype(ust3);
+        user33.setSalary(3900);
         usrr.save(user33);
 
         //initialize inventorytypes (3 indicative types)       
@@ -243,13 +254,33 @@ public class ServiceTest {
         //initialize projects (3 indicative projects)        
         Project project1 = new Project();
         project1.setName("Project1");
+        project1.setBudget(1000000);
+        project1.setIsfinished(false);
+        project1.setStartdate( (new SimpleDateFormat("dd-MM-yyyy")).parse("1-1-2001") );
         prr.save(project1);
         Project project2 = new Project();
         project2.setName("Project2");
+        project2.setBudget(2000000);
+        project2.setIsfinished(false);   
+        //project2.setStartdate( (new SimpleDateFormat("dd-MM-yyyy")).parse("1-1-2001") );   //deliberately left blank     
         prr.save(project2);
         Project project3 = new Project();
         project3.setName("Project3");
+        project3.setBudget(3000000);
+        project3.setIsfinished(false);
+        project3.setStartdate( (new SimpleDateFormat("dd-MM-yyyy")).parse("1-1-2003") );        
         prr.save(project3);
+        Project project4 = new Project();
+        project4.setName("Project4");
+        project4.setBudget(4000000);
+        //project4.setIsfinished(true);     //we do not know if it is finished
+        prr.save(project4);
+        Project project5 = new Project();
+        project5.setName("Project5");
+        project5.setBudget(5000000);
+        project3.setStartdate( (new SimpleDateFormat("dd-MM-yyyy")).parse("1-1-2005") );                
+        project5.setIsfinished(true);        
+        prr.save(project5);
 
         /*
          * Batch-3: Perform Many to Many associations associations
@@ -267,7 +298,7 @@ public class ServiceTest {
         usersforproject1.add(user11);
         project1.setUsers(usersforproject1);
         project1.getUsers().add(user22);
-        project1.getUsers().add(user33);
+        //project1.getUsers().add(user33);  //user9 is not participating in any project
 
         Set<User> usersforproject2 = new HashSet<User>();
         usersforproject2.add(user12);
@@ -280,25 +311,84 @@ public class ServiceTest {
         project3.setUsers(usersforproject3);
         project3.getUsers().add(user21);
         project3.getUsers().add(user32);
+        project3.getUsers().add(user11); //double insert
 
     }//EoM
 
     /*
-     * Perform complex Queries in the initialized database
+     * Sample Queries in the initialized database
      */
+    //@Ignore
     @Test
     @Transactional
-    public void testQueries() {
+    public void testQueries() throws ParseException {
+
+        List<Project> projects = prr.findByName("Project1");    //it should return 1 project
+        logger.info("SizeOfResults #:"+projects.size());
+        printResults(projects);
+
+        projects = prr.findByNameLike("%proje%");           //it should return 5 projects 
+        logger.info("SizeOfResults #:"+projects.size());
+        printResults(projects);          
         
-        List<Project> projects = prr.findProjectsWhereASpecificUserIsInvolved(new Long(1));
-        logger.info("User with id: 1 works in projects #: "+projects.size());
+        projects = prr.findByNameLikeOrderByBudgetDesc("%proje%");  //it should return 5 projects ordered pr5 to pr1
+        logger.info("SizeOfResults #:"+projects.size());
+        printResults(projects);                  
         
-        projects = prr.findProjectsWhereASpecificUserTypeIsInvolved(new Long(1));
-        logger.info("Usertype with id:1 works in projects #: "+projects.size());
+        projects = prr.findByNameAndBudget("Project1",1000000); //it should return 1 project
+        logger.info("SizeOfResults #:"+projects.size());
+        printResults(projects);        
+
+        projects = prr.findByBudgetGreaterThan(3000000);    //it should return 2 projects
+        logger.info("SizeOfResults #:"+projects.size());
+        printResults(projects);        
         
-        projects = prr.findProjectsWhereASpecificUserIsNotInvolved(new Long(1));
-        logger.info("Usertype with id:1 is notworking in projects #: "+projects.size());        
+        projects = prr.findByBudgetLessThan(3000000);   //it should return 2 projects
+        logger.info("SizeOfResults #:"+projects.size());
+        printResults(projects);        
+
+        projects = prr.findByBudgetIsNull();        //it should return 0 projects
+        logger.info("SizeOfResults #:"+projects.size());
+        printResults(projects);        
+
+        projects = prr.findByIsfinishedTrue();        //it should return 1 project
+        logger.info("SizeOfResults #:"+projects.size());
+        printResults(projects);        
+
+        projects = prr.findByIsfinished(false);        //it should return 4 project
+        logger.info("SizeOfResults #:"+projects.size());
+        printResults(projects);        
         
+        projects = prr.findByStartdateBefore( (new SimpleDateFormat("dd-MM-yyyy")).parse("1-1-2015") );        //it should return 5 projects
+        logger.info("SizeOfResults #:"+projects.size());
+        printResults(projects);        
+
+        projects = prr.findByStartdateAfterAndIsfinishedFalseAndBudgetLessThan( (new SimpleDateFormat("dd-MM-yyyy")).parse("1-1-1999"), 2000000 );  //it should return 1 project
+        logger.info("SizeOfResults #:"+projects.size());
+        printResults(projects);        
+                
+        projects = prr.findProjectsWhereASpecificUserIsInvolved(new Long(1));   //it should return 2 projects pr1 and pr3
+        logger.info("SizeOfResults #: " + projects.size());
+        printResults(projects);
+
+        projects = prr.findProjectsWhereASpecificUserTypeIsInvolved(new Long(1));   //it should return 4 projects pr1 pr2 pr3 pr3
+        logger.info("SizeOfResults #: " + projects.size());
+        printResults(projects);
+
+        projects = prr.findDistinctProjectsWhereASpecificUserTypeIsInvolved(new Long(1)); //it should return 3 projects pr1 pr2 pr3
+        logger.info("SizeOfResults #: " + projects.size());
+        printResults(projects);
+
+
+
+    }//EoM
+
+    private static void printResults(List<?> objects) {
+        if (objects != null && objects.size() > 0) {
+            for (Object project : objects) {
+                logger.info(project.toString());
+            }//fir
+        }//if
     }//EoM
 
 }//EoC
